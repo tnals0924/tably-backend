@@ -24,28 +24,28 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Reservation extends BaseSchema {
 
-	@DBRef
-	@JsonIgnore
-	User user;
+    @DBRef
+    @JsonIgnore
+    User user;
 
-	@DBRef
-	List<User> participants;
+    @DBRef
+    List<User> participants;
 
-	Club club;
+    Club club;
 
-	Space space;
+    Space space;
 
-	LocalDate date;
-	LocalTime startTime;
-	LocalTime endTime;
+    LocalDate date;
+    LocalTime startTime;
+    LocalTime endTime;
 
-	String reason;
+    String reason;
 
-	ReservationStatus status;
+    ReservationStatus status;
 
-	@Nullable
-	String returnPicture;
+    @Nullable
+    String returnPicture;
 
-	@Nullable
-	LocalDateTime returnedAt;
+    @Nullable
+    LocalDateTime returnedAt;
 }

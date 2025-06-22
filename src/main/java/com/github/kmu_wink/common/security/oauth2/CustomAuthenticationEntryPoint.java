@@ -1,17 +1,15 @@
 package com.github.kmu_wink.common.security.oauth2;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.kmu_wink.common.api.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.kmu_wink.common.api.ApiResponse;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -19,10 +17,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(HttpServletRequest request,
-        HttpServletResponse response,
-        AuthenticationException exception
-    ) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+            throws IOException {
 
         ApiResponse<?> error = ApiResponse.error(exception.getMessage());
 

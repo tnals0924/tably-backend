@@ -10,7 +10,9 @@ public class MaxOneWeekValidator implements ConstraintValidator<MaxOneWeek, Loca
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
 
-        if (value == null) return true;
+        if (value == null) {
+            return true;
+        }
 
         LocalDate today = LocalDate.now();
 

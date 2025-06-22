@@ -1,12 +1,5 @@
 package com.github.kmu_wink.domain.user.service;
 
-import static com.github.kmu_wink.domain.user.exception.UserExceptions.*;
-
-import java.util.List;
-import java.util.Objects;
-
-import org.springframework.stereotype.Service;
-
 import com.github.kmu_wink.domain.user.dto.internal.UserDto;
 import com.github.kmu_wink.domain.user.dto.request.SignUpRequest;
 import com.github.kmu_wink.domain.user.dto.request.UpdateClubRequest;
@@ -15,57 +8,52 @@ import com.github.kmu_wink.domain.user.dto.response.UsersResponse;
 import com.github.kmu_wink.domain.user.exception.UserException;
 import com.github.kmu_wink.domain.user.repository.UserRepository;
 import com.github.kmu_wink.domain.user.schema.User;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.github.kmu_wink.domain.user.exception.UserExceptions.ALREADY_SIGNUP;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	public UsersResponse getAllUser(String query) {
+    public UsersResponse getAllUser(String query) {
 
-		List<UserDto> users = userRepository.findAllByNameContaining(query).stream()
-			.map(UserDto::from)
-			.toList();
+        List<UserDto> users = userRepository.findAllByNameContaining(query).stream().map(UserDto::from).toList();
 
-		return UsersResponse.builder()
-			.users(users)
-			.build();
-	}
+        return UsersResponse.builder().users(users).build();
+    }
 
-	public UserResponse getMyInfo(User user) {
+    public UserResponse getMyInfo(User user) {
 
-		return UserResponse.builder()
-			.user(UserDto.from(user))
-			.build();
-	}
+        return UserResponse.builder().user(UserDto.from(user)).build();
+    }
 
-	public UserResponse signUp(User user, SignUpRequest dto) {
+    public UserResponse signUp(User user, SignUpRequest dto) {
 
-		if (Objects.nonNull(user.getName()) && Objects.nonNull(user.getClub())) {
-			throw UserException.of(ALREADY_SIGNUP);
-		}
+        if (Objects.nonNull(user.getName()) && Objects.nonNull(user.getClub())) {
+            throw UserException.of(ALREADY_SIGNUP);
+        }
 
-		user.setName(dto.name());
-		user.setClub(dto.club());
+        user.setName(dto.name());
+        user.setClub(dto.club());
 
-		user = userRepository.save(user);
+        user = userRepository.save(user);
 
-		return UserResponse.builder()
-			.user(UserDto.from(user))
-			.build();
-	}
+        return UserResponse.builder().user(UserDto.from(user)).build();
+    }
 
-	public UserResponse updateClub(User user, UpdateClubRequest request) {
+    public UserResponse updateClub(User user, UpdateClubRequest request) {
 
-		user.setClub(request.club());
+        user.setClub(request.club());
 
-		user = userRepository.save(user);
+        user = userRepository.save(user);
 
-		return UserResponse.builder()
-			.user(UserDto.from(user))
-			.build();
-	}
+        return UserResponse.builder().user(UserDto.from(user)).build();
+    }
 }

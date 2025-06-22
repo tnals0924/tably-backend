@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserExceptions {
 
-	ALREADY_SIGNUP("이미 가입된 유저입니다."),
-	USER_NOT_FOUND("유저를 찾을 수 없습니다."),
-	;
+    ALREADY_SIGNUP("이미 가입된 유저입니다."),
+    USER_NOT_FOUND("유저를 찾을 수 없습니다."),
+    ;
 
-	private final String message;
+    private final String message;
 }

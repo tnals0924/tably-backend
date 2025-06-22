@@ -1,5 +1,6 @@
 package com.github.kmu_wink.common.security.oauth2;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.oauth2.client.ClientsConfiguredCondition;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
@@ -9,8 +10,6 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,12 +22,9 @@ public class OAuth2ClientRegistrationRepositoryConfig {
     @ConditionalOnMissingBean(ClientRegistrationRepository.class)
     public InMemoryClientRegistrationRepository clientRegistrationRepository() {
 
-        return new InMemoryClientRegistrationRepository(
-            new OAuth2ClientPropertiesMapper(properties)
-                .asClientRegistrations()
+        return new InMemoryClientRegistrationRepository(new OAuth2ClientPropertiesMapper(properties).asClientRegistrations()
                 .values()
                 .stream()
-                .toList()
-        );
+                .toList());
     }
 }

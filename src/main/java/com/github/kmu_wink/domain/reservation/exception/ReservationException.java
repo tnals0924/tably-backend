@@ -4,13 +4,13 @@ import com.github.kmu_wink.common.api.exception.ApiException;
 
 public class ReservationException extends ApiException {
 
-	private ReservationException(ReservationExceptions reservationExceptions) {
+    private ReservationException(ReservationExceptions reservationExceptions) {
 
-		super(reservationExceptions.getMessage());
-	}
+        super(reservationExceptions.getMessage());
+    }
 
-	public static ReservationException of(ReservationExceptions reservationExceptions) {
+    public static ReservationException of(ReservationExceptions reservationExceptions) {
 
-		return new ReservationException(reservationExceptions);
-	}
+        return new ReservationException(reservationExceptions);
+    }
 }

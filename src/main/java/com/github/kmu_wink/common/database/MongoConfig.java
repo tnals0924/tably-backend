@@ -16,33 +16,28 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 @Configuration
-@EnableMongoRepositories(
-	basePackages = "com.github.kmu_wink",
-	excludeFilters = @ComponentScan.Filter(
-		type = FilterType.REGEX,
-		pattern = ".*\\.repository\\..*Redis.*"
-	)
-)
+@EnableMongoRepositories(basePackages = "com.github.kmu_wink", excludeFilters = @ComponentScan.Filter(type =
+		FilterType.REGEX, pattern = ".*\\.repository\\..*Redis.*"))
 @EnableMongoAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class MongoConfig {
 
-	@Bean
-	public MappingMongoConverter mappingMongoConverter(
-		MongoDatabaseFactory mongoDatabaseFactory,
-		MongoMappingContext mongoMappingContext
-	) {
+    @Bean
+    public MappingMongoConverter mappingMongoConverter(
+            MongoDatabaseFactory mongoDatabaseFactory,
+            MongoMappingContext mongoMappingContext
+    ) {
 
-		DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
-		MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
-		converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
+        MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
+        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
 
-		return converter;
-	}
+        return converter;
+    }
 
-	@Bean
-	public MongoTransactionManager transactionManager(MongoDatabaseFactory mongoDatabaseFactory) {
+    @Bean
+    public MongoTransactionManager transactionManager(MongoDatabaseFactory mongoDatabaseFactory) {
 
-		return new MongoTransactionManager(mongoDatabaseFactory);
-	}
+        return new MongoTransactionManager(mongoDatabaseFactory);
+    }
 }

@@ -1,7 +1,14 @@
 package com.github.kmu_wink.domain.reservation.controller;
 
-import java.time.LocalDate;
-
+import com.github.kmu_wink.common.api.ApiController;
+import com.github.kmu_wink.common.api.ApiResponse;
+import com.github.kmu_wink.common.security.oauth2.OAuth2GoogleUser;
+import com.github.kmu_wink.domain.reservation.dto.request.ReservationRequest;
+import com.github.kmu_wink.domain.reservation.dto.response.ReservationResponse;
+import com.github.kmu_wink.domain.reservation.dto.response.ReservationsResponse;
+import com.github.kmu_wink.domain.reservation.service.ReservationService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.kmu_wink.common.api.ApiController;
-import com.github.kmu_wink.common.api.ApiResponse;
-import com.github.kmu_wink.common.security.oauth2.OAuth2GoogleUser;
-import com.github.kmu_wink.domain.reservation.dto.request.ReservationRequest;
-import com.github.kmu_wink.domain.reservation.dto.response.ReservationResponse;
-import com.github.kmu_wink.domain.reservation.dto.response.ReservationsResponse;
-import com.github.kmu_wink.domain.reservation.service.ReservationService;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
 
 @ApiController("/reservations")
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class ReservationController {
 
     @GetMapping("/me")
     public ApiResponse<ReservationsResponse> getMyReservations(
-        @AuthenticationPrincipal OAuth2GoogleUser principal
+            @AuthenticationPrincipal OAuth2GoogleUser principal
     ) {
 
         return ApiResponse.ok(reservationService.getMyReservations(principal.getUser()));
@@ -39,7 +37,7 @@ public class ReservationController {
 
     @GetMapping("/daily")
     public ApiResponse<ReservationsResponse> getDailyReservations(
-        @RequestParam LocalDate date
+            @RequestParam LocalDate date
     ) {
 
         return ApiResponse.ok(reservationService.getDailyReservations(date));
@@ -47,8 +45,8 @@ public class ReservationController {
 
     @GetMapping("/weekly")
     public ApiResponse<ReservationsResponse> getWeeklyReservations(
-        @RequestParam LocalDate startDate,
-        @RequestParam LocalDate endDate
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate
     ) {
 
         return ApiResponse.ok(reservationService.getWeeklyReservations(startDate, endDate));
@@ -56,8 +54,8 @@ public class ReservationController {
 
     @PostMapping
     public ApiResponse<ReservationResponse> reserve(
-        @AuthenticationPrincipal OAuth2GoogleUser principal,
-        @RequestBody @Valid ReservationRequest request
+            @AuthenticationPrincipal OAuth2GoogleUser principal,
+            @RequestBody @Valid ReservationRequest request
     ) {
 
         return ApiResponse.ok(reservationService.reserve(principal.getUser(), request));
@@ -65,8 +63,8 @@ public class ReservationController {
 
     @DeleteMapping("/{reservationId}")
     public ApiResponse<ReservationResponse> cancelReservation(
-        @AuthenticationPrincipal OAuth2GoogleUser principal,
-        @PathVariable String reservationId
+            @AuthenticationPrincipal OAuth2GoogleUser principal,
+            @PathVariable String reservationId
     ) {
 
         reservationService.cancelReservation(principal.getUser(), reservationId);
@@ -76,9 +74,9 @@ public class ReservationController {
 
     @PostMapping("/{reservationId}/return")
     public ApiResponse<ReservationResponse> returnReservation(
-        @AuthenticationPrincipal OAuth2GoogleUser principal,
-        @PathVariable String reservationId,
-        @RequestPart MultipartFile file
+            @AuthenticationPrincipal OAuth2GoogleUser principal,
+            @PathVariable String reservationId,
+            @RequestPart MultipartFile file
     ) {
 
         return ApiResponse.ok(reservationService.returnReservation(principal.getUser(), reservationId, file));

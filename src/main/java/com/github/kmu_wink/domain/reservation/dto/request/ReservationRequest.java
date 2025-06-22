@@ -1,7 +1,11 @@
 package com.github.kmu_wink.domain.reservation.dto.request;
 
 import com.github.kmu_wink.domain.reservation.constant.Space;
-import com.github.kmu_wink.domain.reservation.util.validation.*;
+import com.github.kmu_wink.domain.reservation.util.validation.FutureDate;
+import com.github.kmu_wink.domain.reservation.util.validation.MaxOneWeek;
+import com.github.kmu_wink.domain.reservation.util.validation.MinutesDivisibleByTen;
+import com.github.kmu_wink.domain.reservation.util.validation.ReservationTime;
+import com.github.kmu_wink.domain.reservation.util.validation.TimeRange;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,4 +42,5 @@ public record ReservationRequest(
         @NotBlank
         String reason
 ) {
+
 }

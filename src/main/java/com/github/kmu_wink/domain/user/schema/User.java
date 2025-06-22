@@ -3,7 +3,6 @@ package com.github.kmu_wink.domain.user.schema;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.kmu_wink.common.database.BaseSchema;
 import com.github.kmu_wink.domain.user.constant.Club;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

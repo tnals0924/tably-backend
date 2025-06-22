@@ -29,7 +29,7 @@ public class ReservationScheduler {
         LocalDateTime now = LocalDateTime.now();
 
         reservationRepository.findAllByStatusIn(UPDATE_STATUS)
-            .forEach((reservation) -> updateReservationStatus(reservation, now));
+                .forEach((reservation) -> updateReservationStatus(reservation, now));
     }
 
     @Scheduled(cron = "0 * * * * *")
@@ -38,7 +38,7 @@ public class ReservationScheduler {
         LocalDateTime now = LocalDateTime.now();
 
         reservationRepository.findAllByStatusInAndDate(UPDATE_STATUS, now.toLocalDate())
-            .forEach((reservation) -> updateReservationStatus(reservation, now));
+                .forEach((reservation) -> updateReservationStatus(reservation, now));
     }
 
     protected void updateReservationStatus(Reservation reservation, LocalDateTime current) {

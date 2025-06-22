@@ -1,21 +1,19 @@
 package com.github.kmu_wink.common.security.jwt;
 
-import java.io.IOException;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.kmu_wink.common.api.exception.ApiException;
 import com.github.kmu_wink.common.api.ApiResponse;
-
+import com.github.kmu_wink.common.api.exception.ApiException;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
@@ -24,9 +22,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(
-        @Nonnull HttpServletRequest request,
-        @Nonnull HttpServletResponse response,
-        @Nonnull FilterChain filterChain
+            @Nonnull HttpServletRequest request,
+            @Nonnull HttpServletResponse response,
+            @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
 
         String accessToken = extractToken(request);
@@ -49,9 +47,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        return (authorization != null && authorization.startsWith("Bearer "))
-            ? authorization.substring(7)
-            : null;
+        return (authorization != null && authorization.startsWith("Bearer ")) ? authorization.substring(7) : null;
     }
 
     private void handleException(HttpServletResponse response, ApiException e) throws IOException {

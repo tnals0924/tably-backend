@@ -1,17 +1,16 @@
 package com.github.kmu_wink.domain.user.repository;
 
+import com.github.kmu_wink.domain.user.schema.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import com.github.kmu_wink.domain.user.schema.User;
-
 public interface UserRepository extends MongoRepository<User, String> {
 
-	boolean existsBySocialId(String socialId);
+    boolean existsBySocialId(String socialId);
 
-	List<User> findAllByNameContaining(String name);
+    List<User> findAllByNameContaining(String name);
 
-	Optional<User> findBySocialId(String socialId);
+    Optional<User> findBySocialId(String socialId);
 }

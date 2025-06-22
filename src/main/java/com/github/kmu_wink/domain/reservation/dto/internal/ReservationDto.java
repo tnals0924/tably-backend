@@ -15,35 +15,35 @@ import java.util.Collection;
 @Builder
 public record ReservationDto(
 
-	String id,
-	UserDto user,
-	Collection<UserDto> participants,
-	Club club,
-	Space space,
-	LocalDate date,
-	LocalTime startTime,
-	LocalTime endTime,
-	String reason,
-	ReservationStatus status,
-	String returnPicture,
-	LocalDateTime returnedAt
+        String id,
+        UserDto user,
+        Collection<UserDto> participants,
+        Club club,
+        Space space,
+        LocalDate date,
+        LocalTime startTime,
+        LocalTime endTime,
+        String reason,
+        ReservationStatus status,
+        String returnPicture,
+        LocalDateTime returnedAt
 ) {
 
-	public static ReservationDto from(Reservation reservation) {
+    public static ReservationDto from(Reservation reservation) {
 
-		return ReservationDto.builder()
-			.id(reservation.getId())
-			.user(UserDto.from(reservation.getUser()))
-			.participants(reservation.getParticipants().stream().map(UserDto::from).toList())
-			.club(reservation.getClub())
-			.space(reservation.getSpace())
-			.date(reservation.getDate())
-			.startTime(reservation.getStartTime())
-			.endTime(reservation.getEndTime())
-			.reason(reservation.getReason())
-			.status(reservation.getStatus())
-			.returnPicture(reservation.getReturnPicture())
-			.returnedAt(reservation.getReturnedAt())
-			.build();
-	}
+        return ReservationDto.builder()
+                .id(reservation.getId())
+                .user(UserDto.from(reservation.getUser()))
+                .participants(reservation.getParticipants().stream().map(UserDto::from).toList())
+                .club(reservation.getClub())
+                .space(reservation.getSpace())
+                .date(reservation.getDate())
+                .startTime(reservation.getStartTime())
+                .endTime(reservation.getEndTime())
+                .reason(reservation.getReason())
+                .status(reservation.getStatus())
+                .returnPicture(reservation.getReturnPicture())
+                .returnedAt(reservation.getReturnedAt())
+                .build();
+    }
 }

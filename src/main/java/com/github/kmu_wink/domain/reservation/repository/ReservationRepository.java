@@ -17,7 +17,8 @@ import java.util.Set;
 @Repository
 public interface ReservationRepository extends MongoRepository<Reservation, String> {
 
-    @Query("{ 'space': ?0, 'date': ?1, 'status': { $ne: 'RETURNED' }, 'startTime': { $lt: ?2 }, 'endTime': { $gt: ?3 } }")
+    @Query("{ 'space': ?0, 'date': ?1, 'status': { $ne: 'RETURNED' }, 'startTime': { $lt: ?2 }, 'endTime': { $gt: ?3 " +
+            "} }")
     Optional<Reservation> findByDuplicated(Space space, LocalDate date, LocalTime endTime, LocalTime startTime);
 
     List<Reservation> findAllByUser(User user);

@@ -1,7 +1,7 @@
 package com.github.kmu_wink.common.api.exception;
 
-import java.util.Objects;
-
+import com.github.kmu_wink.common.api.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -12,24 +12,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.github.kmu_wink.common.api.ApiResponse;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({NoResourceFoundException.class, HttpRequestMethodNotSupportedException.class})
+    @ExceptionHandler({ NoResourceFoundException.class, HttpRequestMethodNotSupportedException.class })
     public ApiResponse<?> noResourceFoundException(Exception ignored) {
 
         return ApiResponse.error("요청하신 리소스를 찾을 수 없습니다.");
     }
 
     @ExceptionHandler({
-        HttpMessageNotReadableException.class,
-        MissingServletRequestParameterException.class,
-        MissingServletRequestPartException.class
+            HttpMessageNotReadableException.class, MissingServletRequestParameterException.class,
+            MissingServletRequestPartException.class
     })
     public ApiResponse<?> httpMessageNotReadableException(Exception ignored) {
 

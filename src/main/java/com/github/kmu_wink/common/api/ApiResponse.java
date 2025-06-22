@@ -1,9 +1,9 @@
 package com.github.kmu_wink.common.api;
 
-import java.util.Map;
-
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 @Data
 @RequiredArgsConstructor

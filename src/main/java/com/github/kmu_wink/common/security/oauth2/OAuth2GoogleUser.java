@@ -1,17 +1,15 @@
 package com.github.kmu_wink.common.security.oauth2;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import com.github.kmu_wink.domain.user.schema.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.github.kmu_wink.domain.user.schema.User;
-
-import lombok.Getter;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class OAuth2GoogleUser implements OAuth2User, UserDetails {

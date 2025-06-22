@@ -1,46 +1,47 @@
 package com.github.kmu_wink.common.database;
 
-import java.time.LocalDateTime;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 public abstract class BaseSchema {
 
-	@Id
-	String id;
+    @Id
+    String id;
 
-	@CreatedDate
-	LocalDateTime createdAt;
+    @CreatedDate
+    LocalDateTime createdAt;
 
-	@LastModifiedDate
-	LocalDateTime updatedAt;
+    @LastModifiedDate
+    LocalDateTime updatedAt;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+    @Override
+    public boolean equals(Object obj) {
 
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
+        if (this == obj) {
+            return true;
+        }
 
-		BaseSchema that = (BaseSchema) obj;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
-		return id.equals(that.id);
-	}
+        BaseSchema that = (BaseSchema) obj;
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id.hashCode();
+    }
 }
