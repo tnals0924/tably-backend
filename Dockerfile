@@ -1,30 +1,17 @@
-FROM azul/zulu-openjdk-alpine:21-latest AS build
+FROM gradle:8.14.2-jdk21-alpine AS builder
 
-WORKDIR /app
+WORKDIR /home/gradle/project
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle.kts .
+COPY --chown=gradle:gradle . .
 
-RUN chmod +x ./gradlew
+RUN gradle clean bootJar --no-daemon
 
-RUN ./gradlew dependencies
+FROM eclipse-temurin:21-jre-alpine
 
-COPY src src
+ENV SPRING_PROFILES_ACTIVE=prod
 
-RUN ./gradlew build -x test
-
-FROM azul/zulu-openjdk-alpine:21-jre-latest
-
-WORKDIR /app
-
-RUN addgroup --system --gid 1001 springboot && \
-    adduser --system --uid 1001 --ingroup springboot springboot
-
-COPY --from=build --chown=springboot:springboot /app/build/libs/*.jar app.jar
-
-USER springboot
+COPY --from=builder /home/gradle/project/build/libs/*.jar /app.jar
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
