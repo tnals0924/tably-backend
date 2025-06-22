@@ -1,20 +1,10 @@
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force-response: true
-
 spring:
-  mvc:
-    log-resolved-exception: false
+  config:
+    import:
+      - classpath:application.yaml
   data:
     mongodb:
       uri: ${MONGODB_URI}
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
   security:
     oauth2:
       client:
@@ -28,7 +18,7 @@ spring:
 
 app:
   jwt:
-    key: ${JWT_KEY}
+    key: ${JWT_SECRET_KEY}
   oauth:
     callback:
       success: ${FRONTEND_HOSTNAME}/auth/oauth/callback/success
