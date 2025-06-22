@@ -14,7 +14,6 @@ import com.github.kmu_wink.domain.user.repository.UserRepository;
 import com.github.kmu_wink.domain.user.schema.User;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.kmu_wink.domain.reservation.exception.ReservationExceptions.DUPLICATE_RESERVATION;
@@ -45,54 +42,45 @@ public class ReservationService {
 
     public ReservationsResponse getMyReservations(User user) {
 
-        Sort sort = Sort.by(
-                Sort.Order.asc("status"),
-                Sort.Order.asc("date"),
-                Sort.Order.asc("startTime")
-        );
-
-        List<ReservationDto> reservations = reservationRepository.findAllByUser(user, sort).stream()
-                .sorted(Comparator
-                        .comparing((Reservation res) -> {
-                            if (res.getStatus() == ReservationStatus.RETURNED) {
-                                return res.getReturnPicture() != null ? 1 : 0;
-                            }
-                            return 0;
-                        })
-                        .thenComparing(res -> {
-                            LocalDateTime now = LocalDateTime.now();
-                            LocalDateTime reservationTime = LocalDateTime.of(res.getDate(), res.getStartTime());
-                            return Duration.between(now, reservationTime).abs();
-                        })
+        List<ReservationDto> reservations = Stream.of(
+                        reservationRepository.findAllByUser(user),
+                        reservationRepository.findAllByParticipantsContains(user)
                 )
+                .flatMap(List::stream)
+                .sorted(Comparator.comparing((Reservation res) -> {
+                    if (res.getStatus() == ReservationStatus.RETURNED && res.getReturnPicture() != null) {
+                        return 1;
+                    }
+                    return 0;
+                }).thenComparing(res -> {
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime reservationTime = LocalDateTime.of(res.getDate(), res.getStartTime());
+                    return Duration.between(now, reservationTime).abs();
+                }))
                 .map(ReservationDto::from)
                 .toList();
 
-        return ReservationsResponse.builder()
-                .reservations(reservations)
-                .build();
+        return ReservationsResponse.builder().reservations(reservations).build();
     }
 
     public ReservationsResponse getDailyReservations(LocalDate date) {
 
-        List<ReservationDto> reservations = reservationRepository.findAllByDate(date).stream()
+        List<ReservationDto> reservations = reservationRepository.findAllByDate(date)
+                .stream()
                 .map(ReservationDto::from)
                 .toList();
 
-        return ReservationsResponse.builder()
-                .reservations(reservations)
-                .build();
+        return ReservationsResponse.builder().reservations(reservations).build();
     }
 
     public ReservationsResponse getWeeklyReservations(LocalDate startDate, LocalDate endDate) {
 
-        List<ReservationDto> reservations = reservationRepository.findAllByDateBetween(startDate, endDate).stream()
+        List<ReservationDto> reservations = reservationRepository.findAllByDateBetween(startDate, endDate)
+                .stream()
                 .map(ReservationDto::from)
                 .toList();
 
-        return ReservationsResponse.builder()
-                .reservations(reservations)
-                .build();
+        return ReservationsResponse.builder().reservations(reservations).build();
     }
 
     @Synchronized
@@ -104,12 +92,12 @@ public class ReservationService {
                     throw ReservationException.of(DUPLICATE_RESERVATION);
                 });
 
-        Set<User> participants = Stream.of(dto.participants(), List.of(user.getId()))
+        List<User> participants = Stream.of(dto.participants(), List.of(user.getId()))
                 .flatMap(List::stream)
                 .distinct()
                 .map(userRepository::findById)
                 .map(x -> x.orElseThrow(() -> UserException.of(USER_NOT_FOUND)))
-                .collect(Collectors.toSet());
+                .toList();
 
         Reservation reservation = Reservation.builder()
                 .user(user)
@@ -125,43 +113,35 @@ public class ReservationService {
 
         reservation = reservationRepository.save(reservation);
 
-        return ReservationResponse.builder()
-                .reservation(ReservationDto.from(reservation))
-                .build();
+        return ReservationResponse.builder().reservation(ReservationDto.from(reservation)).build();
     }
 
     public void cancelReservation(User user, String reservationId) {
 
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .stream()
-                .peek(x -> {
-                    if (!x.getParticipants().contains(user))
-                        throw ReservationException.of(NOT_PARTICIPANT_RESERVATION);
-                })
-                .peek(x -> {
-                    if (!x.getStatus().equals(ReservationStatus.PENDING))
-                        throw ReservationException.of(RESERVATION_ALREADY_STARTED);
-                })
-                .findFirst()
-                .orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId).stream().peek(x -> {
+            if (!x.getParticipants().contains(user)) {
+                throw ReservationException.of(NOT_PARTICIPANT_RESERVATION);
+            }
+        }).peek(x -> {
+            if (!x.getStatus().equals(ReservationStatus.PENDING)) {
+                throw ReservationException.of(RESERVATION_ALREADY_STARTED);
+            }
+        }).findFirst().orElseThrow();
 
         reservationRepository.delete(reservation);
     }
 
     public ReservationResponse returnReservation(User user, String reservationId, MultipartFile file) {
 
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .stream()
-                .peek(x -> {
-                    if (!x.getParticipants().contains(user))
-                        throw ReservationException.of(NOT_PARTICIPANT_RESERVATION);
-                })
-                .peek(x -> {
-                    if (x.getReturnPicture() != null)
-                        throw ReservationException.of(RESERVATION_ALREADY_RETURNED);
-                })
-                .findFirst()
-                .orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId).stream().peek(x -> {
+            if (!x.getParticipants().contains(user)) {
+                throw ReservationException.of(NOT_PARTICIPANT_RESERVATION);
+            }
+        }).peek(x -> {
+            if (x.getReturnPicture() != null) {
+                throw ReservationException.of(RESERVATION_ALREADY_RETURNED);
+            }
+        }).findFirst().orElseThrow();
 
         String returnPictureUrl = s3Service.upload("reservation/return/" + reservationId, file);
         reservation.setReturnPicture(returnPictureUrl);
@@ -174,8 +154,6 @@ public class ReservationService {
 
         reservation = reservationRepository.save(reservation);
 
-        return ReservationResponse.builder()
-                .reservation(ReservationDto.from(reservation))
-                .build();
+        return ReservationResponse.builder().reservation(ReservationDto.from(reservation)).build();
     }
 }
