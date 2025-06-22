@@ -1,20 +1,19 @@
 package com.github.kmu_wink.domain.reservation.util.schedule;
 
-import static com.github.kmu_wink.domain.reservation.constant.ReservationStatus.*;
+import com.github.kmu_wink.domain.reservation.constant.ReservationStatus;
+import com.github.kmu_wink.domain.reservation.repository.ReservationRepository;
+import com.github.kmu_wink.domain.reservation.schema.Reservation;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import com.github.kmu_wink.domain.reservation.constant.ReservationStatus;
-import com.github.kmu_wink.domain.reservation.repository.ReservationRepository;
-import com.github.kmu_wink.domain.reservation.schema.Reservation;
-
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import static com.github.kmu_wink.domain.reservation.constant.ReservationStatus.IN_USE;
+import static com.github.kmu_wink.domain.reservation.constant.ReservationStatus.PENDING;
+import static com.github.kmu_wink.domain.reservation.constant.ReservationStatus.RETURNED;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ public class ReservationScheduler {
     private final Set<ReservationStatus> UPDATE_STATUS = Set.of(PENDING, IN_USE);
 
     @PostConstruct
-    @Transactional
     public void onStartUp() {
 
         LocalDateTime now = LocalDateTime.now();
@@ -35,7 +33,6 @@ public class ReservationScheduler {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    @Transactional
     public void cron() {
 
         LocalDateTime now = LocalDateTime.now();
@@ -44,7 +41,6 @@ public class ReservationScheduler {
             .forEach((reservation) -> updateReservationStatus(reservation, now));
     }
 
-    @Transactional
     protected void updateReservationStatus(Reservation reservation, LocalDateTime current) {
 
         LocalDateTime startTime = LocalDateTime.of(reservation.getDate(), reservation.getStartTime());

@@ -15,7 +15,6 @@ import com.github.kmu_wink.domain.user.schema.User;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Duration;
@@ -84,7 +83,6 @@ public class ReservationService {
     }
 
     @Synchronized
-    @Transactional
     public ReservationResponse reserve(User user, ReservationRequest dto) {
 
         reservationRepository.findByDuplicated(dto.space(), dto.date(), dto.endTime(), dto.startTime())
