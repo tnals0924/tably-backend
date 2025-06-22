@@ -46,6 +46,7 @@ public class ReservationService {
                         reservationRepository.findAllByParticipantsContains(user)
                 )
                 .flatMap(List::stream)
+                .distinct()
                 .sorted(Comparator.comparing((Reservation res) -> {
                     if (res.getStatus() == ReservationStatus.RETURNED && res.getReturnPicture() != null) {
                         return 1;
